@@ -809,11 +809,13 @@ static NSArray *sXcodeFileExtensions = nil;
 	[detailsWindowController showWindow:self];
 }
 
-- (void)xedFile:(NSString *)path line:(NSString *)line { 
+- (void)xedFile:(NSString *)path line:(NSString *)line client:(NSString *)client {
+    
     id args = [NSArray arrayWithObjects:
                @"-l",
                line,
                path,
+               client,
                nil];
     // NSLog(@"Args %@", args);
     [NSTask launchedTaskWithLaunchPath:[[NSBundle mainBundle] pathForResource:@"xedReplacement.sh" ofType:nil]
@@ -836,6 +838,7 @@ static NSArray *sXcodeFileExtensions = nil;
 		if (row >= 0 && row < [displayedMessages count])
 		{
 			LoggerMessage *msg = [displayedMessages objectAtIndex:row];
+            
 			NSString *filename = msg.filename;
 			if ([filename length])
 			{
@@ -862,7 +865,8 @@ static NSArray *sXcodeFileExtensions = nil;
 					if (useXcode)
 					{                        
                         [self xedFile:filename 
-                                 line:[NSString stringWithFormat:@"%d", MAX(0, msg.lineNumber)]];
+                                 line:[NSString stringWithFormat:@"%d", MAX(0, msg.lineNumber)]
+                               client:[attachedConnection clientName]];
 					}
 					else
 					{
